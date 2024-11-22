@@ -23,13 +23,13 @@ class ReportGenerator:
         return file_path
 
     def generate_daily_report(self, markdown_file_path):
-        with open(markdown_file_path, 'r') as file:
+        with open(markdown_file_path, 'r',encoding='utf-8') as file:
             markdown_content = file.read()
 
         report = self.llm.generate_daily_report(markdown_content)
 
         report_file_path = os.path.splitext(markdown_file_path)[0] + "_report.md"
-        with open(report_file_path, 'w+') as report_file:
+        with open(report_file_path, 'w+',encoding='utf-8') as report_file:
             report_file.write(report)
 
         print(f"Generated report saved to {report_file_path}")
