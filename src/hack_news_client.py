@@ -34,10 +34,10 @@ class HackNewsClient:
                     score_tag = subtexts[i].select_one(".score")
                     if score_tag:
                         news["score"] = int(score_tag.text.split()[0])  # Convert to integer
+                hot_news.append(f"Rank: {news['rank']}, Title: {news['title']}, Link: {news['link']}, Score: {news['score']}")
 
-                hot_news.append(news)
-
-            return hot_news
+            result_str = "\n".join(hot_news)  # 用换行符连接列表中的字符串
+            return result_str
 
         except requests.RequestException as e:
             print(f"Error fetching data: {e}")

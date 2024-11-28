@@ -43,7 +43,13 @@ class ReportGenerator:
     def generate_hack_news_report(self,content):
         report = self.llm.generate_hack_news_report(content)
         file_path = "hack_news/"+datetime.now().strftime("%Y-%m-%d")+"_report.md"
-        with open(file_path, 'w+') as report_file:
+
+        # 确保目录存在，如果目录不存在则创建
+        directory = os.path.dirname(file_path)  # 获取文件所在的目录路径
+        if not os.path.exists(directory):
+            os.makedirs(directory)  # 如果目录不存在，创建目录
+
+        with open(file_path, 'w+',encoding="utf-8") as report_file:
             report_file.write(report)
         LOG.info(f"GitHub 项目报告已保存到 {file_path}")
         return report, file_path

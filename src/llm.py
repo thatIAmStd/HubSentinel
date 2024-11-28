@@ -5,6 +5,7 @@ from pyexpat.errors import messages
 
 from logger import LOG  # 导入日志模块
 
+
 class LLM:
     def __init__(self):
         # 创建一个OpenAI客户端实例
@@ -13,26 +14,26 @@ class LLM:
         with open("prompts/report_prompt.txt", "r", encoding='utf-8') as file:
             self.system_prompt = file.read()
 
-    def generate_hack_news_report(self,content,test = False):
+    def generate_hack_news_report(self, content, test=False):
         with open("prompts/hack_news_prompt.txt", "r", encoding='utf-8') as file:
             self.system_prompt = file.read()
-        messages = [
-            {"role":"system","content":self.system_prompt},
-            {"role": "user", "content": content}
-        ]
         if test:
             print(messages)
             return f"test: {test}"
 
         LOG.info("使用 GPT 模型")
+        if isinstance(content, list):  # 判断是否为列表
+            content = "\n".join(content)  # 使用换行符拼接列表中的每个元素
 
         try:
             # 调用OpenAI GPT模型生成报告
             response = self.client.chat.completions.create(
-                model="gpt-4o-mini",  # 指定使用的模型版本
-                messages=messages
+                model="gpt-3.5-turbo",
+                messages=[
+                    {"role": "system", "content": self.system_prompt},
+                    {"role": "user", "content": content}
+                ]
             )
-
             LOG.debug("GPT response: {}", response)
             # 返回模型生成的内容
             return response.choices[0].message.content
