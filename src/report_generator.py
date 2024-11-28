@@ -3,6 +3,7 @@
 import os
 from datetime import date, timedelta
 from logger import LOG  # 导入日志模块，用于记录日志信息
+from datetime import datetime
 
 class ReportGenerator:
     def __init__(self, llm):
@@ -38,4 +39,12 @@ class ReportGenerator:
         LOG.info(f"GitHub 项目报告已保存到 {report_file_path}")
 
         return report, report_file_path
+
+    def generate_hack_news_report(self,content):
+        report = self.llm.generate_hack_news_report(content)
+        file_path = "hack_news/"+datetime.now().strftime("%Y-%m-%d")+"_report.md"
+        with open(file_path, 'w+') as report_file:
+            report_file.write(report)
+        LOG.info(f"GitHub 项目报告已保存到 {file_path}")
+        return report, file_path
 

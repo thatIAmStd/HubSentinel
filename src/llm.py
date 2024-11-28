@@ -1,6 +1,8 @@
 import os
 import json
 from openai import OpenAI  # 导入OpenAI库用于访问GPT模型
+from pyexpat.errors import messages
+
 from logger import LOG  # 导入日志模块
 
 class LLM:
@@ -10,6 +12,33 @@ class LLM:
         # 从TXT文件加载提示信息
         with open("prompts/report_prompt.txt", "r", encoding='utf-8') as file:
             self.system_prompt = file.read()
+
+    def generate_hack_news_report(self,content,test = False):
+        with open("prompts/hack_news_prompt.txt", "r", encoding='utf-8') as file:
+            self.system_prompt = file.read()
+        messages = [
+            {"role":"system","content":self.system_prompt,"type":"text"},
+            {"role": "user", "content": content,"type":"text"},
+        ]
+        if test:
+            print(messages)
+            return f"test: {test}"
+
+        LOG.info("使用 GPT 模型")
+
+        try:
+            # 调用OpenAI GPT模型生成报告
+            response = self.client.chat.completions.create(
+                model="gpt-4o-mini",  # 指定使用的模型版本
+                messages=messages
+            )
+            LOG.debug("GPT response: {}", response)
+            # 返回模型生成的内容
+            return response.choices[0].message.content
+        except Exception as e:
+            # 如果在请求过程中出现异常，记录错误并抛出
+            LOG.error(f"生成报告时发生错误：{e}")
+            raise
 
     def generate_daily_report(self, markdown_content, dry_run=False):
         # 使用从TXT文件加载的提示信息
