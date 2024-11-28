@@ -17,8 +17,8 @@ class LLM:
         with open("prompts/hack_news_prompt.txt", "r", encoding='utf-8') as file:
             self.system_prompt = file.read()
         messages = [
-            {"role":"system","content":self.system_prompt,"type":"text"},
-            {"role": "user", "content": content,"type":"text"},
+            {"role":"system","content":self.system_prompt},
+            {"role": "user", "content": content}
         ]
         if test:
             print(messages)
@@ -32,6 +32,7 @@ class LLM:
                 model="gpt-4o-mini",  # 指定使用的模型版本
                 messages=messages
             )
+
             LOG.debug("GPT response: {}", response)
             # 返回模型生成的内容
             return response.choices[0].message.content
